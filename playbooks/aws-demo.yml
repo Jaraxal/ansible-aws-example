@@ -1,0 +1,47 @@
+---
+# Basic provisioning example
+- name: Create AWS resources
+  hosts: localhost
+  connection: local
+  gather_facts: False
+
+  tasks:
+  - name: Create a security group
+    ec2_group:
+      name: ansible
+      description: "Ansible Security Group"
+      region: "{{aws_region}}"
+      vpc_id: "{{vpc_id}}"
+      aws_access_key: "{{aws_access_key}}"
+      aws_secret_key: "{{aws_secret_key}}"
+      rules:
+        - proto: all
+          cidr_ip: {{cidr_ip}}
+        - proto: all
+          group_name: ansible
+      rules_egress:
+        - proto: all
+          cidr_ip: 0.0.0.0/0
+    register: firewall
+
+  - name: Create an EC2 instance
+    ec2:
+      aws_access_key: "{{aws_access_key}}"
+      aws_secret_key: "{{aws_secret_key}}"
+      key_name: "{{key_name}}"
+      region: "{{aws_region}}"
+      group_id: "{{firewall.group_id}}"
+      instance_type: "{{instance_type}}"
+      image: "{{ami_id}}"
+      wait: yes
+      volumes:
+        - device_name: /dev/sda1
+          volume_type: gp2
+          volume_size: 100
+          delete_on_termination: true
+      exact_count: 6
+      count_tag:
+         Name: ansible-demo
+      instance_tags:
+         Name: ansible-demo
+    register: ec2
