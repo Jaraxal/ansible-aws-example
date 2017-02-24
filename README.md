@@ -1,8 +1,8 @@
 # ansible-aws-example
 
-An an example Ansible playbook for creating a security group and a specified number of instances on AWS.
+An example Ansible playbook for creating a security group and a specified number of instances on AWS.
 
-This playbook uses the ec2 and ec2_group Ansible modules:
+This playbook uses the ec2 and ec2_group Ansible modules.  To learn more about configuration options with these modules:
 
 - ec2: http://docs.ansible.com/ansible/ec2_module.html
 - ec2_group:http://docs.ansible.com/ansible/ec2_group_module.html
